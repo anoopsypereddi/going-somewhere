@@ -18,14 +18,14 @@ import java.util.List;
  * display in each individual tab.
  */
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> {
-    private int mNumberItems;
-    private List<Item> mItems;
-    private List<String> mItemKeys;
-    private String mTripKey;
     final private String colorImportanceOne = "#ffe082";
     final private String colorImportanceTwo = "#ffca28";
     final private String colorImportanceThree = "#ffa000";
     FirebaseUtils firebaseUtils = new FirebaseUtils();
+    private int mNumberItems;
+    private List<Item> mItems;
+    private List<String> mItemKeys;
+    private String mTripKey;
 
     public ItemAdapter(List<Item> items, List<String> itemKeys, String tripKey) {
         mNumberItems = items.size();
@@ -36,6 +36,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
 
     /**
      * Method to allow faster adding of items to a list of items.
+     *
      * @param newItem
      */
     public void addItem(Item newItem, String newKey) {
@@ -61,6 +62,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     /**
      * Calls the bind method on the specific position which is currently overwriting the specific
      * view holder.
+     *
      * @param holder
      * @param position
      */
@@ -110,10 +112,12 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
                 return false;
             }
         });
-        holder.bind(name, packed);
+        holder.bind(name, packed, importance);
     }
+
     /**
      * The number of items within the recycler view. AKA the number of items within the list.
+     *
      * @return number of items in the list
      */
     @Override
@@ -128,29 +132,43 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     class ItemViewHolder extends RecyclerView.ViewHolder {
         TextView nameTextView;
         ImageView packedImageView;
+        TextView importanceTextView;
 
         /**
          * Initializes the view holder for all the items which are being set in the view holder.
+         *
          * @param itemView
          */
         public ItemViewHolder(View itemView) {
             super(itemView);
             nameTextView = (TextView) itemView.findViewById(R.id.item_name);
             packedImageView = (ImageView) itemView.findViewById(R.id.item_packed);
+            importanceTextView = (TextView) itemView.findViewById(R.id.item_importance);
         }
 
         /**
          * Sets all the information within the view holder including the text and then if the item
          * has been packed makes the imageView visible.
+         *
          * @param name
          */
-        void bind(String name, boolean packed) {
+        void bind(String name, boolean packed, int importance) {
             nameTextView.setText(name);
+            String importanceString = "";
+            for (int i = 0; i < importance; i++) {
+                //number of exclamation points denotes importance
+                importanceString = importanceString + "!";
+            }
+            importanceTextView.setText(importanceString);
+
+            //if the object is packed switches the importance display with a check mark
             if (packed) {
                 packedImageView.setVisibility(View.VISIBLE);
-            }
-            else {
+                importanceTextView.setVisibility(View.INVISIBLE);
+
+            } else {
                 packedImageView.setVisibility(View.INVISIBLE);
+                importanceTextView.setVisibility(View.VISIBLE);
             }
         }
     }

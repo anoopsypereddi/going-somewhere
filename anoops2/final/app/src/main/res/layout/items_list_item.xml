@@ -3,6 +3,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:elevation="8dp"
     android:orientation="vertical">
 
     <TextView
@@ -26,8 +27,9 @@
         android:id="@+id/item_packed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_done_white_24dp"
         android:layout_gravity="center_vertical|end"
-        android:visibility="invisible"/>
+        android:layout_marginRight="20dp"
+        android:src="@drawable/ic_done_white_24dp"
+        android:visibility="invisible" />
 
 </FrameLayout>

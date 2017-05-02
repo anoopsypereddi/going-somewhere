@@ -1,7 +1,6 @@
 package com.example.asypereddi.goingsomewhere;
 
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -63,17 +62,35 @@ public class FirebaseUtils {
     }
 
     /**
-     * Deletes the trip and its items from the firebase database.
+     * Deletes the trip and its items from the firebase database if the user is the only user invited
+     * to the trip, otherwise removes the trip only for the specific user who called the delete function.
      *
      * @param tripKey
      */
-    public void deleteTrip(String tripKey) {
-        tripRef.child(tripKey).removeValue();
-        itemRef.child(tripKey).removeValue();
+    public void deleteTrip(final String tripKey) {
+        tripRef.child(tripKey).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Trip trip = dataSnapshot.getValue(Trip.class);
+                if (trip.getUserIds().size() == 1) {
+                    tripRef.child(tripKey).removeValue();
+                    itemRef.child(tripKey).removeValue();
+                } else {
+                    trip.removeUserId(user.getUid());
+                    tripRef.child(tripKey).setValue(trip);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     /**
      * If the friend can be added and is added, the function adds them into the trip.
+     *
      * @param tripKey
      * @param user
      */
@@ -98,6 +115,7 @@ public class FirebaseUtils {
 
     /**
      * Deletes the specific item from the trip.
+     *
      * @param itemKey
      * @param tripKey
      */
@@ -107,6 +125,7 @@ public class FirebaseUtils {
 
     /**
      * Toggles the item from packed to unpacked or vice-versa.
+     *
      * @param itemKey
      * @param tripKey
      */
@@ -119,6 +138,7 @@ public class FirebaseUtils {
                 item.setPacked(!item.isPacked());
                 specificItemRef.setValue(item);
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.d(TAG, databaseError.toString());

@@ -41,4 +41,8 @@ public class Trip {
     public List<String> getUserIds() {
         return userIds;
     }
+
+    public void removeUserId(String userId) {
+        userIds.remove(userId);
+    }
 }

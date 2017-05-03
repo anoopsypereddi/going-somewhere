@@ -79,7 +79,7 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                CharSequence options[] = new CharSequence[]{"Delete Trip", "Rename Trip", "Rename Date", "Rename Location"};
+                CharSequence options[] = new CharSequence[]{"Delete Trip"};
                 AlertDialog.Builder builder = new AlertDialog.Builder(holder.itemView.getContext());
                 builder.setItems(options, new DialogInterface.OnClickListener() {
                     @Override

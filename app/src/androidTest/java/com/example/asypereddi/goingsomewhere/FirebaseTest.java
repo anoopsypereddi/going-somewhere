@@ -68,6 +68,7 @@ public class FirebaseTest {
         final CountDownLatch writeSignal = new CountDownLatch(1);
         mTestRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
+            @Before
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Item testItem = dataSnapshot.getValue(Item.class);
                 testItem.setPacked(true);

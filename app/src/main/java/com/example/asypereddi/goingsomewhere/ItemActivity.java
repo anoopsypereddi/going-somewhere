@@ -130,35 +130,57 @@ public class ItemActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
-        //Creates a dialog consisting of the users which can be added to the Trip and on selection
-        // adds them to the trip.
+        /*
+         * Creates a dialog consisting of the users which can be added to the Trip and on selection
+         * adds them to the trip.
+         */
         if (item.getItemId() == R.id.add_friend_setting) {
             final List<String> userIds = new ArrayList<>();
             final List<CharSequence> usernames = new ArrayList<>();
             mRootRef.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    Iterable<DataSnapshot> children = dataSnapshot.getChildren();
-                    for (DataSnapshot child : children) {
-                        String username = child.child("username").getValue(String.class);
-                        if (!user.getUid().equals(child.getKey())) {
-                            //displays all users who are not you
-                            userIds.add(child.getKey());
-                            usernames.add(username);
-                        }
-                    }
-                    AlertDialog.Builder builder = new AlertDialog.Builder(ItemActivity.this);
-                    Log.d(TAG, usernames.toString());
-                    builder.setItems(usernames.toArray(new CharSequence[usernames.size()]),
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    firebaseUtils.addFriend(tripKey, userIds.get(which));
-                                    Toast.makeText(getApplicationContext(), "Added " + usernames.get(which) +
-                                            " to the Trip!", Toast.LENGTH_SHORT).show();
+                    final Iterable<DataSnapshot> children = dataSnapshot.getChildren();
+                    final List<String> usersInTrip = new ArrayList<>();
+                    /*
+                     * Find the users which are already in the trip and omit them from the
+                     * generated drop down.
+                     */
+                    mRootRef.child("trips").child(tripKey).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            Trip trip = dataSnapshot.getValue(Trip.class);
+                            usersInTrip.addAll(trip.getUserIds());
+                            for (DataSnapshot child : children) {
+                                String username = child.child("username").getValue(String.class);
+                                if (!usersInTrip.contains(child.getKey())) {
+                                    userIds.add(child.getKey());
+                                    usernames.add(username);
                                 }
-                            });
-                    builder.show();
+                            }
+                            if (usernames.size() == 0) {
+                                //If no users which exists are not in the trip
+                                Toast.makeText(getApplicationContext(), "No Users Available to Add!", Toast.LENGTH_SHORT)
+                                        .show();
+                            } else {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(ItemActivity.this);
+                                builder.setItems(usernames.toArray(new CharSequence[usernames.size()]),
+                                        new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                firebaseUtils.addFriend(tripKey, userIds.get(which));
+                                                Toast.makeText(getApplicationContext(), "Added " + usernames.get(which) +
+                                                        " to the Trip!", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                builder.show();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                        }
+                    });
                 }
 
                 @Override

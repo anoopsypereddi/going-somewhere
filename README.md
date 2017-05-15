@@ -1,4 +1,4 @@
-# going_somewhere
+# Going Somewhere?
 Going Somewhere is a trip planning android application which features Facebook authentication, Firebase Storage, and Multi-User Compatibility. Allowing for users to plan trips with their friends.
 
 Firebase Database Functions:

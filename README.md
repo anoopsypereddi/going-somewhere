@@ -15,4 +15,5 @@ Store information such as:
   - Name
   - Importance
   - Packed or Unpacked
+  
 Trips may be shared with any users who use the application and all Trip and Item information will be shared through firebase. User login will be handled by Facebook Login and user information will be stored within Firebase Storage.

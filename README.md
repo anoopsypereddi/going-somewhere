@@ -9,9 +9,11 @@ Store information such as:
   - Trip Date
   - Trip Location
   - Users on Trip
+  
   User information
   - Usernames
   - Email
+  
   Item Information
   - Name
   - Importance

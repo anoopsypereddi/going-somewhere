@@ -3,6 +3,7 @@ Going Somewhere is a trip planning android application which features Facebook a
 
 Firebase Database Functions:
 Store information such as:
+
   Trip information
   - Trip Name
   - Trip Date
